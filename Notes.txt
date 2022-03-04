@@ -1,0 +1,37 @@
+See notes in drive under spring -> spring JPA entity+relationship.pdf
+
+It is common convention to put your entities in a package called domain or
+model
+
+One to one mapping
+
+We start by creating the pojos/enteties Recipe.java and Notes.java in the domain
+package.
+--Add setters and getters for the fields including the Long id.
+--Annotate the class with @Entity
+    @Entity
+    public class Recipe {}
+--Annotate the id field with @Id and use @GeneratedValue() to auto generate the id using
+the "strategy = GenerationType.IDENTITY"
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+--Annote the with @Lob which is for large objects
+    @Lob
+     private Byte[] image;
+
+--Now we are going to map the one to one relationship between recipe and note in Recipe.java
+
+     @OneToOne(cascade = CascadeType.ALL)
+      private Notes notes;
+
+--The private Notes notes is what we are mapping to from Recipe.java
+--The cascade = CascadeType.ALL means Recipe owns this relationship so if we delete a recipe
+it needs to delete all the notes associated with it.
+
+--Now in Notes.java annotate the private Recipe recipe field with @OneToOne
+
+    @OneToOne
+    private Recipe recipe;
+
