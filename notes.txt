@@ -1,0 +1,11 @@
+Here we are going to use ENUMS stored in a DB
+
+--Create an enum class Difficulty.java
+
+--Now add the difficulty property to the Recipe.java class with setters and getters.
+    @Enumerated(value = EnumType.STRING)
+    private Difficulty difficulty;
+
+--The EnumType can be set to ordinal or string, by default is set to ordinal.
+--An ordinal Enum in the database will be a number e.g 1,2,3
+--If you can always use EnumType.STRING which will persist the string  EASY, MODERATE, KIND_OF_HARD, HARD
