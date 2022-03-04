@@ -1,0 +1,40 @@
+Database URL: http://localhost:8080/h2-console
+Here we are going to work on a many-to-many relationship between
+recipe and category
+
+--After creating the Category.java class add a set for recipes.
+--Annotate it with
+
+    @ManyToMany(mappedBy = "categories")
+    private Set<Recipe> recipes;
+
+--the mappedBy = "categories" is the name of the private Set<Category> categories field in the Recipe.java class
+
+
+--After creating the Recipe.java class add a set for categories.
+--Annotate it with
+
+    @ManyToMany
+    @JoinTable(name = "recipe_category",
+        joinColumns = @JoinColumn(name = "recipe_id"),
+        inverseJoinColumns = @JoinColumn(name = "category_id"))
+    private Set<Category> categories;
+
+--You need to specify a join table
+
+    @JoinTable()
+
+--you need to give it a table name
+
+    name = "recipe_category"
+
+--you need to specify the join column for the current class
+    joinColumns = @JoinColumn(name = "recipe_id")
+
+the name "recipe_id" comes from the convention that hibernate is using is tablename_id
+
+--Now set the relationship in the opposite e.g. inverse way using
+    inverseJoinColumns = @JoinColumn(name = "category_id"))
+
+--in other words we want a table named recipe_category that has a many-to-many relationship from
+recipe to category using @JoinColumn(name = "recipe_id") and the inverse using inverseJoinColumns = @JoinColumn(name = "category_id"))
