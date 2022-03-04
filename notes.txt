@@ -1,0 +1,26 @@
+--We are going to create a one-to-many from recipe to ingredient.
+--We are going to create a many-to-one relationship from ingredient to recipe.
+--This will be a bidirectional relationship.
+
+--In the Ingredient.java class add the  private Recipe recipe field that this ingredient belongs to
+and annotate it with  @ManyToOne
+    @ManyToOne
+    private Recipe recipe;
+
+--We do not want to cascade because if we delete an ingredient we do not want that to cascate up and
+delete a recipe.
+--Add the @Entity annotation to the class
+--Add the @Id property to the id field
+
+
+--In the Recipe.java class annotate the private Set<Ingredient> ingredients field with @OneToMany
+and use cascade = CascadeType. ALL so all operations like delete cascades from the Recipe to the Ingredients
+--Use mappedBy = "recipe" to map it to the property in the Ingredient class, what this is saying is that
+this recipe  will be store in a property in Ingredient entity. This completes the relationship from Recipe to ingredient
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "recipe")
+    private Set<Ingredient> ingredients;
+
+--you can use set or list for the ingredients' property
+--Add the @Entity annotation to the class
+--Add the @Id property to the id field
