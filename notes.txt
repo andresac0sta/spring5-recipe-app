@@ -24,3 +24,7 @@ this recipe  will be store in a property in Ingredient entity. This completes th
 --you can use set or list for the ingredients' property
 --Add the @Entity annotation to the class
 --Add the @Id property to the id field
+
+In the assigment
+by default the fetch type is set to EAGER which means it fetches the object at runtime 
+@OneToOne(fetch = FetchType.EAGER)
