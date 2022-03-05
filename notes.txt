@@ -1,0 +1,13 @@
+Here we are going to start using the repository pattern
+
+--Create a package and name it repositories.
+
+--create the interfaces CategoryRepository, RecipeRepository, and the Repository
+
+    public interface CategoryRepository extends CrudRepository<Category, Long> {
+    }
+
+--extend CrudRepository<T, ID> where T is the entity type and the ID is the
+ID type of the entity
+
+    CrudRepository<Category, Long>
