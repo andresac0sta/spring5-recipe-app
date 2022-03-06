@@ -1,0 +1,67 @@
+We are going to take a look at spring data JPA query methods
+--This is very similar to dynamic query/finder methods
+
+--we can create a method name using a property and say findByPropertyName as a whole naming convention
+where we have finders.
+
+--we can string together different properties, so we can say findByDescription,
+findByLocation and pass in those values.
+
+--What happens underneath the covers is spring data JPA is going to create that query based on the criteria that
+was found inside the method name.
+
+--All we need to do is go to the repositories and define a method in the interface and create a couple
+of dynamic finder for the data that we are populating in unit of measure and category in order to be able
+to look up by description.
+
+--Now since we have a description field in both Category.java and UnitOfMeasure.java
+
+      private String description;
+
+We are going to add the methods to the interfaces
+
+CategoryRepository
+
+    public interface CategoryRepository extends CrudRepository<Category, Long> {
+
+        Optional<Category> findByDescription(String description);
+    }
+
+Notice that the type Optional<Category>
+
+UnitOfMeasureRepository
+
+    public interface UnitOfMeasureRepository extends CrudRepository<UnitOfMeasure, Long> {
+
+        Optional<UnitOfMeasure> findByDescription(String description);
+    }
+
+Notice that the type Optional<UnitOfMeasure>
+
+--Now to use it create 2 properties of each interface in the IndexController.java
+
+    private CategoryRepository categoryRepository;
+    private UnitOfMeasureRepository unitOfMeasureRepository;
+
+--Add in constructor dependency injection
+
+    public IndexController(CategoryRepository categoryRepository, UnitOfMeasureRepository unitOfMeasureRepository) {
+        this.categoryRepository = categoryRepository;
+        this.unitOfMeasureRepository = unitOfMeasureRepository;
+    }
+
+--Now create 2 variables of each
+
+    Optional<Category> categoryOptional = categoryRepository.findByDescription("American");
+    Optional<UnitOfMeasure> unitOfMeasureOptional = unitOfMeasureRepository.findByDescription("Teaspoon");
+
+--Now output them to the console to confirm the query did return
+
+    System.out.println("Cat Id is: " + categoryOptional.get().getId());
+    System.out.println("UOM ID is: " + unitOfMeasureOptional.get().getId());
+
+--To test run the application Spring5RecipeAppApplication and goingt to localhost:8080
+the output of the console should be
+
+Cat Id is: 1
+UOM ID is: 1
