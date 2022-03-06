@@ -1,6 +1,15 @@
 Here we are going to start using the repository pattern
 
+-- Recipe is going to be our primary object, and we will not be working ingredients or notes independently,
+so we don't need a repository ingredients or notes.
+
+--Category and unit of measure are going to be maintained independent of recipe.
+
 --Create a package and name it repositories.
+
+--the naming convention for repositories is using the domain or the entity  name follow by Repository
+
+        CategoryRepository
 
 --create the interfaces CategoryRepository, RecipeRepository, and the Repository
 
@@ -8,6 +17,7 @@ Here we are going to start using the repository pattern
     }
 
 --extend CrudRepository<T, ID> where T is the entity type and the ID is the
-ID type of the entity
+ID type of the entity =>CrudRepository<Category, Long>
 
-    CrudRepository<Category, Long>
+   public interface CategoryRepository extends CrudRepository<Category, Long> {
+    }
