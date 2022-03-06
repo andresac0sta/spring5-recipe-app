@@ -1,0 +1,53 @@
+there several ways we can initialize a database using spring
+
+Hibernate DDL Auto
+-- Data Definition Language e.g. create table
+-- Data Manipulation Language e.g. update
+--Hibernate DDL Auto property is set by the spring property
+    spring.jpa.hibernate.ddl-auto
+--It is a hibernate specific feature
+--This allows your database to be created by your JPA entity classes, and we have seen
+this is action by not creating the tables but letting hibernate create the database.
+
+--We do have several options
+
+    --none: nothing is going to happen there is no DDL activity from Hibernate and it does not
+        verify the database structure
+
+    --validate: this option is preferably used in production which will fail the startup if hibernate is going
+        to expect a table that will fail on startup if that table is missing or a column in that table is missing
+
+    --update: will automatically update an existing database schema use it with caution because if your JPA model
+        changes or if there is an error in it hibernate will run DDL statements to update the database and if you
+        are on a production system this is probably not a behavior you want. If you run in prod your user should not
+        have DDL capabilities.
+
+    --create: will do initial database creation.
+
+    --create-drop: when you shut down the database will get dropped, all the database schema objects will get dropped.
+
+    --By default spring boot uses create-drop when using an embedded database like H2 and derby
+    --If you are not using an embedded database then set this property to none
+        spring.jpa.hibernate.ddl-auto = none
+
+--we can also initialize the database using hibernate this is a default property specific to hibernate not
+spring and if we have a file called import.SQL and if it exits on the root of the class path it will get executed if
+hibernate DDL auto property is set to create or create-drop that file can contain DDL and DML statements.
+
+Spring JDBC
+
+--We get a spring datasource initializer via spring boot which by default it will use the
+initializer to load a schema from schema.sql and data from data.sql
+
+--spring boot can also load platform specific SQL files and this is going to be schema-${platform}.sql or
+data-${platform}.sql
+--you must set the property spring.datasource.platform
+
+--It is recommended to use the spring data source initializer you don't want to be using both spring initializer
+and hibernate import.sql initializer it could cause conflicts.
+
+--Now create data.sql file under resources that will be loaded on the root of the classpath
+--this file will be eligible to be pick up by spring boot not the hibernate flavor.
+--You can change the dialect e.g. MySQL,H2
+--When creating tables hibernate uses camel case
+    UnitOfMeasure => Unit_Of_Measure
