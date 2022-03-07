@@ -1,3 +1,6 @@
+This notes will cover section 8 lessons 141,142,143,144,146,147,148,148
+
+Lesson 141
 We are going to take a look at spring data JPA query methods
 --This is very similar to dynamic query/finder methods
 
@@ -65,3 +68,60 @@ the output of the console should be
 
 Cat Id is: 1
 UOM ID is: 1
+
+Lesson 142-143 is the assigment
+
+Lesson 144
+
+--These are tips that you can use when dealing with bidirectional relationship, but ideally you want to use JPA constraints.
+
+--In this case when we add a recipe note to the recipe we can automatically have that setter update that for us programmatically.
+
+--Recipe.java
+    public void setNotes(Notes notes){
+        this.notes =  notes;
+        notes.setRecipe(this);
+
+    }
+
+    public Recipe addIngredient(Ingredient ingredient){
+    ingredient.setRecipe(this);
+    this.ingredient.add(ingredient);
+    return this;
+    }
+
+
+Lessons 146-149
+Go over the JPA mapping annotation
+before we let hibernate create everything behind the scenes now we are going to be redundant by using the JPA annotations
+
+When we are going inheritance but do not deal directly with the parent POJO in other words we don't want there to
+be a table for the parent class use
+@MappedSuperclass
+
+Use it to specify a table
+@Table(name= "owners")
+
+Use it to specify a column
+@Column(name= "last_name")
+
+Lessons 150-158 go over how to implement Spring Data JPA repositories for each entity
+
+Lesson 159
+--After lessons 150-158 we have 2 different services implementations a map and JPA
+    services
+        -> map (service)
+        -> springdatajpa (JPA service)
+
+--you can set a profile for each service using
+
+--OwnerSDJpaService.java
+    @Profile("springdatajpa")
+
+--OwnerMapService.java
+     @Profile({default, map})
+
+--If we don't specify an active profile the active profile will be set to default
+
+--Remember you can set the active profile property in the applications.properties file
+    spring.profiles.active=springdatajpa
