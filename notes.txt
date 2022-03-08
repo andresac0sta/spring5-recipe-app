@@ -1,0 +1,8 @@
+To add project lombok use a dependency
+
+    <dependency>
+        <groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+	</dependency>
+
+--add the plugin is not already used under plugins search for lombok
