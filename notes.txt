@@ -1,0 +1,53 @@
+in this lesson we are going to display a recipe
+we are going to pass in the id value
+we are going to use a URL parameter on that
+
+In the index.html we added
+    <tr th:each="recipe : ${recipes}">
+        <!--/*@thymesVar id="recipe" type="guru.springframework.domain.Recipe"*/-->
+        <td th:text="${recipe.id}">334</td>
+        <td th:text="${recipe.description}">Tasty Goodnees 3</td>
+        <td><a href="#" th:href="@{'/recipe/show/' + ${recipe.id}}">View</a></td>
+    </tr>
+
+here we are setting the href to /recipe/show/
+    <td><a href="#" th:href="@{'/recipe/show/' + ${recipe.id}}">View</a></td>
+
+We also added a hint
+    <!--/*@thymesVar id="recipe" type="guru.springframework.domain.Recipe"*/-->
+
+We also create a new template under templates/recipe/ show.html
+
+Now since we are using test driven development we started at RecipeServiceImplTest.java
+we will need to add a searchBy() to RecipeServiceImpl.java
+
+  @Override
+    public Recipe findById(Long l) {
+
+        Optional<Recipe> recipeOptional = recipeRepository.findById(l);
+
+        if (!recipeOptional.isPresent()) {
+            throw new RuntimeException("Recipe Not Found!");
+        }
+
+        return recipeOptional.get();
+    }
+
+We also added a new controller RecipeController.java we added a showById() and a  @RequestMapping
+
+
+    @RequestMapping("/recipe/show/{id}")
+    public String showById(@PathVariable String id, Model model){
+        model.addAttribute("recipe", recipeService.findById(Long.valueOf(id)));
+        return "recipe/show";
+    }
+
+To get the id from the URL we use {id}
+    @RequestMapping("/recipe/show/{id}")
+
+To get the id passed in we use @PathVariable String id
+
+    public String showById(@PathVariable String id, Model model){}
+
+Return the new view show.html
+    return "recipe/show";
