@@ -1,0 +1,11 @@
+Lecture 196 Assignment Review Display remaining recipe properties
+In the show.html add the hint
+    <!--/*@thymesVar id="recipe" type="guru.springframework.domain.Recipe"*/-->
+Add an iterator
+    <li th:each="category : ${recipe.categories}" th:text="${category.getDescription()}">cat three</li>
+
+Get tha values for prep time
+     <p th:text="${(recipe.prepTime) +  '  Min'}">30 min</p>
+
+Get the difficulty level
+     <p th:text="${recipe.difficulty}">Easy</p>
