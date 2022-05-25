@@ -1,0 +1,143 @@
+This covers lectures 197 and 198
+
+Lecture 197
+we are going to talk about Form post which is used to post data back to the server
+
+In a spring MVC context:
+We have our web application and the controller
+now when we want to present a form to the controller we are going create an object, and we are going
+to bind data to that object.
+
+By convention in spring MVC as long as we make the form property names the same as the object property names
+the framework is going to bind those properties of the form post to a bean for us to work with.
+
+Some people call this a command object a backing bean
+
+Data binding in spring
+Command object shuttle information to and from forms
+spring will automatically bind this for us
+it is going to be done by property name
+
+Example
+we have a PersonBean
+the bean's firstNMame would bind to the form property firstNAme
+
+If we had a form property address.addressLine1, and we pass it to the framework it  will automatically bind to the beans'
+property addressLine1
+
+We can also support the use of arrays
+
+email[0]/email[1] would bind to index zero and on of the email list or set property of the person bean
+
+Lecture 198
+we are going to work in setting up command objects and doing some type conversation.
+
+we are going to get the command objects going into the spring framework, persisting to the database,
+doing a type conversion to our objects, comming back out of the database, doing another type conversion to our
+command objects.
+
+We are going to go through creating command objects and creating standard converters as spring bean components
+getting those wired into the context, creating a service that is going to accept a command object convert it, save it
+to the database and then return an entity, then convert the entity to the command object on the way out.
+
+
+We start by creating a set of command objects for our data model under /commands.
+
+At this point you could expose your domain objects(pojos) but as your project grows your domain objects requirements
+will be different from what you are exposing to your web tier. You will have a different set of object and needs.
+
+It is not a good practice, but it is very command to see small projects exposing the domain objects and using those to bind to web forms and then
+evolve to whee they are using command objects.
+
+This command objects mimic our domain objects e.g.
+    CategoryCommand.java
+    RecipeCommand.java
+    IngredientCommand.java
+
+for example the  RecipeCommand.java  is using project lombok to give us a simple pojo
+with getter and setters with no arg constructor for our use.
+
+Now to get this in and out of the system we need to do a type conversion
+from the type of the domain object back to the command object and vice-versa
+
+We added the /converts
+The spring framework has an interface for converter that takes in 2 types and is going to implement the convert().
+So it will take in one of the types and convert it to the other, it is null safe, so it is able to return null and
+also it will return an instance of the converted type.
+
+Since spring does not guarantee thread safety we are going to use project lombok's synchronized method
+so that makes this synchronized and thread safe so we can run this in a multi threaded environment.
+
+Also, we are declaring all variables final so that they are immutable for more code security.
+
+    @Component
+    public class UnitOfMeasureToUnitOfMeasureCommand implements Converter<UnitOfMeasure, UnitOfMeasureCommand> {
+
+        @Synchronized
+        @Nullable
+        @Override
+        public UnitOfMeasureCommand convert(UnitOfMeasure unitOfMeasure) {
+             if (unitOfMeasure != null) {
+                    final UnitOfMeasureCommand uomc = new UnitOfMeasureCommand();
+                    uomc.setId(unitOfMeasure.getId());
+                    uomc.setDescription(unitOfMeasure.getDescription());
+                    return uomc;
+                }
+                return null;
+            }
+        }
+
+
+Look at the test for that
+    UnitOfMeasureCommandToUnitOfMeasureTest
+
+This is going to be use to take a from the web tier, save this entity comming back from the web tier.
+We are going to expand out our service so in our ReceipeService.jav we are going to accept in a RecipeCommand.
+We will take in that command object and we want to persist it to the database
+
+    public interface RecipeService {
+
+        Set<Recipe> getRecipes();
+
+        Recipe findById(Long l);
+
+        RecipeCommand saveRecipeCommand(RecipeCommand command);
+    }
+
+In the implementation we add in the converters properties and arguments to the constructor declared as final
+so this injected beans cannot be manipulated within the class
+
+    public class RecipeServiceImpl implements RecipeService {
+
+        private final RecipeRepository recipeRepository;
+        private final RecipeCommandToRecipe recipeCommandToRecipe;
+        private final RecipeToRecipeCommand recipeToRecipeCommand;
+
+        public RecipeServiceImpl(RecipeRepository recipeRepository, RecipeCommandToRecipe recipeCommandToRecipe, RecipeToRecipeCommand recipeToRecipeCommand) {
+            this.recipeRepository = recipeRepository;
+            this.recipeCommandToRecipe = recipeCommandToRecipe;
+            this.recipeToRecipeCommand = recipeToRecipeCommand;
+        }
+on line 56 there is the new implementation and the way this is going to work is the RecipeCommand comes in
+and we convert it using converter. Now the converted object it is still just a pojo is not a hibernate object
+that is why we called it a detachedRecipe so that it is detached from the hibernate context.
+
+Now within the repository we are going to save that detachedRecipe, underneath the covers what is going to happen
+with spring data jpa is if it is new is going to create a new entity if it is an existing entity it is going to do
+a merge operation.
+
+        @Override
+        @Transactional
+        public RecipeCommand saveRecipeCommand(RecipeCommand command) {
+            Recipe detachedRecipe = recipeCommandToRecipe.convert(command);
+
+            Recipe savedRecipe = recipeRepository.save(detachedRecipe);
+            log.debug("Saved RecipeId:" + savedRecipe.getId());
+            return recipeToRecipeCommand.convert(savedRecipe);
+        }
+
+Now the RecipeRepository is going to return back a new isntance of the saved recipe and in this we are going to convert
+it back
+    Recipe savedRecipe = recipeRepository.save(detachedRecipe);
+
+look at RecipeServiceIT.java
