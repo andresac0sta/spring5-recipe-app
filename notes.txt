@@ -1,0 +1,35 @@
+Lecture 200 update a recipe
+
+in the RecipeController.java we are going to refactor at line 24 we are changing it to /id/show
+so we are going to extract the id value that way
+
+ @RequestMapping("/recipe/{id}/show")
+
+On our index.html on lines 20 to 21 we included hints for the types
+
+    <!--/*@thymesVar id="recipes" type="java.util.List"*/-->
+    <!--/*@thymesVar id="recipe" type="guru.springframework.domain.Recipe"*/-->
+
+On line 53 we changed how the url is formatted
+     <td><a href="#" th:href="@{'/recipe/' + ${recipe.id} + '/show'}">View</a></td>
+
+Now we update the RecipeController.java lines 38 to 43
+
+     @RequestMapping("recipe/{id}/update")
+     public String updateRecipe(@PathVariable String id, Model model){
+         model.addAttribute("recipe", recipeService.findCommandById(Long.valueOf(id)));
+         return  "recipe/recipeform";
+     }
+
+We also added a findCommandById() to the RecipeService.java and implementation to the RecipeServiceImpl.java
+
+service
+ RecipeCommand findCommandById(Long l);
+
+ implementation
+
+ @Override
+     @Transactional
+     public RecipeCommand findCommandById(Long l) {
+         return recipeToRecipeCommand.convert(findById(l));
+     }
