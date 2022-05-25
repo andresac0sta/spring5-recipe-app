@@ -1,0 +1,45 @@
+Lecture 199 Create a recipe
+In this lecture we are using the command object and creating a new form
+for the application.
+
+We added the recipeform.html
+
+we added the form tag on line 24
+     <form  th:object="${recipe}" th:action="@{/recipe/}"  method="post">
+
+where we are passing the command object th:object="${recipe}"
+the th:action="@{/recipe/} tells thymeleaf that we are going to post to recipe, so we are not filling in
+the entire URL because thymeleaf is going to parse it at runtime and build the URL for us.
+
+This form is a generic form so we are going to use it for both creations and updates line 25
+
+If we were doing an update we will want to pass the ID, obviously id is not something we want to expose to allow
+editable, but we do need to pass it in with the command object
+
+On line 35 we are using th:field="*{description}" where the *{description} is going to be used along with
+ <form  th:object="${recipe}"  from line 24 so it will read
+    recipe.description
+
+Now we need to implement the controller methods RecipeController.java
+
+Implement the method that will render the view and use the RecipeCommand
+
+    @RequestMapping("recipe/new")
+    public String newRecipe(Model model){
+            model.addAttribute("recipe", new RecipeCommand());
+
+            return "recipe/recipeform";
+        }
+
+Now we have to handle the post back
+here we are using ModelAttribute annotation to tell spring to bind the form post parameters
+to the RecipeCommand object
+
+We are also going to use a redirect to tell spring to redirect to a specifict URL
+
+ @PostMapping("recipe")
+    public String saveOrUpdate(@ModelAttribute RecipeCommand command){
+        RecipeCommand savedCommand = recipeService.saveRecipeCommand(command);
+
+        return "redirect:/recipe/show/" + savedCommand.getId();
+    }
