@@ -1,0 +1,18 @@
+lecture 203 show ingredient
+We are going to set up viewing a specific ingredient
+Just as a helper we have IngredientCommand.java.
+on line 16 we added a property for a recipeId so we know what recipe id this belongs to
+
+We also implemented the method in the IngredientController.java
+
+    @GetMapping
+    @RequestMapping("recipe/{recipeId}/ingredient/{id}/show")
+    public String showRecipeIngredient(@PathVariable String recipeId,
+                                       @PathVariable String id, Model model){
+        model.addAttribute("ingredient", ingredientService.findByRecipeIdAndIngredientId(Long.valueOf(recipeId), Long.valueOf(id)));
+        return "recipe/ingredient/show";
+    }
+
+We also added the IngredientService.java
+
+We also added the IngredientServiceImpl.java
