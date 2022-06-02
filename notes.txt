@@ -1,0 +1,27 @@
+Lecture 204 update ingredient.
+
+that we have with ingredient is that it  has a nested unit of measure(UOM) object
+
+We are going to use a dropdown for that in the ingredient.html
+
+    <div class="col-md-3 form-group">
+        <label>UOM:</label>
+        <select class="form-control" name="uom.id">
+            <option th:each="uomEach : ${uomList}"
+                    th:value="${uomEach.id}"
+                    th:selected="${uomEach.id.equals(ingredient.uom.id)}"
+                    th:text="${uomEach.description}">Each</option>
+        </select>
+    </div>
+
+The name of the form is
+      <name="uom.id">
+we are passing a list of uom
+    <option th:each="uomEach : ${uomList}"
+
+And for each unit of measure we are going to give you the value of the ID so that we know which one
+to get back to
+    th:value="${uomEach.id}"
+
+Then we are making sure the values from <form  th:object="${ingredient}"  and the uom match
+    th:selected="${uomEach.id.equals(ingredient.uom.id)}"
