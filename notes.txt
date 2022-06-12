@@ -1,0 +1,30 @@
+This covers lectures 225,226,227
+
+Lecture 226
+When to use which exception
+Depends on your specific needs
+• If just setting the HTTP status - use @ReponseStatus
+• If redirection to a view, Use
+SimpleMappingExceptionResolver
+• If both, consider @ExceptionHandler on the
+controller
+
+Lecture 227
+we are going to take a look at using ResponseStatus
+
+We added an exceptions package and created our own exception class
+ NotFoundException.java
+
+We added the anotation for not found
+ @ResponseStatus(HttpStatus.NOT_FOUND)
+
+and we are using the NotFoundException class in RecipeServiceImpl.java
+
+   if (!recipeOptional.isPresent()) {
+            //throw new RuntimeException("Recipe Not Found!");
+            throw new NotFoundException("Recipe Not Found");
+        }
+
+to test this new functionality just start the app and open a browser and replace the id by any number that is
+not in the database in this case we used 4
+ localhost:8080//recipe/4/show
