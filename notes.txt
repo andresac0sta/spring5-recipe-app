@@ -5,7 +5,7 @@ We added a 404error.html
 
 In our RecipeController.java we also added a mapping for the error
  this takes precedence over the exception class created before
- 
+
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(NotFoundException.class)
     public ModelAndView handleNotFound(){
