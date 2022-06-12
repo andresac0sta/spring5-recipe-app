@@ -1,0 +1,20 @@
+Lecture 228
+In this lecture we are going to display a custom 404 view to the user
+
+We added a 404error.html
+
+In our RecipeController.java we also added a mapping for the error
+ this takes precedence over the exception class created before
+ 
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(NotFoundException.class)
+    public ModelAndView handleNotFound(){
+
+        log.error("Handling not found exception");
+
+        ModelAndView modelAndView = new ModelAndView();
+
+        modelAndView.setViewName("404error");
+
+        return modelAndView;
+    }
