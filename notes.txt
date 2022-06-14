@@ -1,0 +1,37 @@
+This covers lectures 230 and 231
+230 is an assignment
+add and error view for number format exception when the user enters characters
+instead of a number.
+
+231 is the solution
+In the recipeController.java the @ExceptionHandler() handles and exception thrown at run time depending on the type
+in this case is NumberFormatException.class
+
+ @ResponseStatus(HttpStatus.BAD_REQUEST)
+     @ExceptionHandler(NumberFormatException.class)
+     public ModelAndView handleNumberFormat(Exception exception){
+
+         log.error("Handling Number Format Exception");
+         log.error(exception.getMessage());
+
+         ModelAndView modelAndView = new ModelAndView();
+
+         modelAndView.setViewName("400error");
+         modelAndView.addObject("exception", exception);
+
+         return modelAndView;
+     }
+
+In the recipeController the exception above will be thrown here: recipeService.findById(new Long(id)));
+
+@GetMapping("/recipe/{id}/show")
+    public String showById(@PathVariable String id, Model model){
+
+        model.addAttribute("recipe", recipeService.findById(new Long(id)));
+
+        return "recipe/show";
+    }
+
+
+
+Add the 400error.html
