@@ -1,0 +1,14 @@
+Lecture 232 spring ControllerAdvice annotation
+
+ControllerAdvice is used to set up a global type ExceptionHandler
+
+we start by creating  a new class ControllerExceptionHandler.java and annotating it with @ControllerAdvice
+
+@Slf4j
+@ControllerAdvice
+public class ControllerExceptionHandler {
+
+        @ResponseStatus(HttpStatus.BAD_REQUEST)
+        @ExceptionHandler(NumberFormatException.class)
+        public ModelAndView handleNumberFormat(Exception exception){}
+}
